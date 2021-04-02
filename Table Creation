@@ -1,0 +1,160 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Corts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Corts` (
+  `idCorts` INT NOT NULL,
+  `Coverage` VARCHAR(45) NULL,
+  PRIMARY KEY (`idCorts`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Clubs`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Clubs` (
+  `idClubs` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idClubs`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Sportsman`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Sportsman` (
+  `Name` VARCHAR(45) NOT NULL,
+  `Place` INT NULL,
+  `ClubID` VARCHAR(45) NULL,
+  PRIMARY KEY (`Name`),
+  INDEX `Place_idx` (`Place` ASC) VISIBLE,
+  INDEX `ClubID_idx` (`ClubID` ASC) VISIBLE,
+  CONSTRAINT `Place`
+    FOREIGN KEY (`Place`)
+    REFERENCES `mydb`.`Corts` (`idCorts`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `ClubID`
+    FOREIGN KEY (`ClubID`)
+    REFERENCES `mydb`.`Clubs` (`idClubs`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Trainers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Trainers` (
+  `Name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Name`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Sportsmen&&Trainers`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Sportsmen&&Trainers` (
+  `NameT` VARCHAR(45) NULL,
+  `NameS` VARCHAR(45) NULL,
+  INDEX `NameT_idx` (`NameT` ASC) VISIBLE,
+  INDEX `NameS_idx` (`NameS` ASC) VISIBLE,
+  CONSTRAINT `NameT`
+    FOREIGN KEY (`NameT`)
+    REFERENCES `mydb`.`Trainers` (`Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `NameS`
+    FOREIGN KEY (`NameS`)
+    REFERENCES `mydb`.`Sportsman` (`Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Sports`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Sports` (
+  `SportName` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`SportName`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Sports&&Men`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Sports&&Men` (
+  `idSports` VARCHAR(45) NULL,
+  `idMen` VARCHAR(45) NULL,
+  INDEX `IdSports_idx` (`idSports` ASC) VISIBLE,
+  INDEX `IdMen_idx` (`idMen` ASC) VISIBLE,
+  CONSTRAINT `IdSports`
+    FOREIGN KEY (`idSports`)
+    REFERENCES `mydb`.`Sports` (`SportName`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `IdMen`
+    FOREIGN KEY (`idMen`)
+    REFERENCES `mydb`.`Sportsman` (`Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Competition`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Competition` (
+  `idCompetition` INT NOT NULL,
+  `Time` VARCHAR(45) NULL,
+  `Place` VARCHAR(45) NULL,
+  `Winner` VARCHAR(45) NULL,
+  PRIMARY KEY (`idCompetition`),
+  INDEX `Winner_idx` (`Winner` ASC) VISIBLE,
+  CONSTRAINT `Winner`
+    FOREIGN KEY (`Winner`)
+    REFERENCES `mydb`.`TempCompetition` (`idPlayers`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`TempCompetition`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`TempCompetition` (
+  `idComp` INT NULL,
+  `idPlayers` VARCHAR(45) NULL,
+  INDEX `idComp_idx` (`idComp` ASC) VISIBLE,
+  INDEX `idPlayer_idx` (`idPlayers` ASC) VISIBLE,
+  CONSTRAINT `idComp`
+    FOREIGN KEY (`idComp`)
+    REFERENCES `mydb`.`Competition` (`idCompetition`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idPlayer`
+    FOREIGN KEY (`idPlayers`)
+    REFERENCES `mydb`.`Sportsman` (`Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
