@@ -15,146 +15,866 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`Corts`
+-- Table `mydb`.`des`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Corts` (
-  `idCorts` INT NOT NULL,
-  `Coverage` VARCHAR(45) NULL,
-  PRIMARY KEY (`idCorts`))
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`des` (
+  `idType` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `Unique_` VARCHAR(100) NULL DEFAULT NULL,
+  PRIMARY KEY (`idType`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Clubs`
+-- Table `mydb`.`b`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Clubs` (
-  `idClubs` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idClubs`))
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`b` (
+  `idB` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `idType` INT NULL DEFAULT NULL,
+  `Token` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`idB`),
+  INDEX `Type_idx` (`idType` ASC) VISIBLE,
+  CONSTRAINT `Type`
+    FOREIGN KEY (`idType`)
+    REFERENCES `mydb`.`des` (`idType`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Sportsman`
+-- Table `mydb`.`o`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Sportsman` (
-  `Name` VARCHAR(45) NOT NULL,
-  `Place` INT NULL,
-  `ClubID` VARCHAR(45) NULL,
-  PRIMARY KEY (`Name`),
-  INDEX `Place_idx` (`Place` ASC) VISIBLE,
-  INDEX `ClubID_idx` (`ClubID` ASC) VISIBLE,
+CREATE TABLE IF NOT EXISTS `mydb`.`o` (
+  `idO` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`idO`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`sp`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`sp` (
+  `IdSp` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `Explanation` VARCHAR(500) NULL DEFAULT NULL,
+  PRIMARY KEY (`IdSp`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`c`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`c` (
+  `idC` INT NOT NULL AUTO_INCREMENT,
+  `idO` INT NULL DEFAULT NULL,
+  `Time` DATE NULL DEFAULT NULL,
+  `idB` INT NULL DEFAULT NULL,
+  `idSp` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`idC`),
+  INDEX `Place_idx` (`idB` ASC) VISIBLE,
+  INDEX `Org_idx` (`idO` ASC) VISIBLE,
+  INDEX `Sport_idx` (`idSp` ASC) VISIBLE,
+  CONSTRAINT `Buil`
+    FOREIGN KEY (`idB`)
+    REFERENCES `mydb`.`b` (`idB`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+  CONSTRAINT `Org`
+    FOREIGN KEY (`idO`)
+    REFERENCES `mydb`.`o` (`idO`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+  CONSTRAINT `Sport`
+    FOREIGN KEY (`idSp`)
+    REFERENCES `mydb`.`sp` (`IdSp`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 30
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`cl`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`cl` (
+  `IDCl` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`IDCl`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`psppl`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`psppl` (
+  `idtype` INT NOT NULL,
+  `idsp` INT NOT NULL,
+  PRIMARY KEY (`idtype`, `idsp`),
+  INDEX `Sport_idx` (`idsp` ASC) VISIBLE,
   CONSTRAINT `Place`
-    FOREIGN KEY (`Place`)
-    REFERENCES `mydb`.`Corts` (`idCorts`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `ClubID`
-    FOREIGN KEY (`ClubID`)
-    REFERENCES `mydb`.`Clubs` (`idClubs`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    FOREIGN KEY (`idtype`)
+    REFERENCES `mydb`.`des` (`idType`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `Sprt`
+    FOREIGN KEY (`idsp`)
+    REFERENCES `mydb`.`sp` (`IdSp`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Trainers`
+-- Table `mydb`.`s`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Trainers` (
-  `Name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Name`))
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `mydb`.`s` (
+  `idS` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `IdCl` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`idS`),
+  INDEX `ClubID_idx` (`IdCl` ASC) VISIBLE,
+  CONSTRAINT `FK_IDCLUB`
+    FOREIGN KEY (`IdCl`)
+    REFERENCES `mydb`.`cl` (`IDCl`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 18
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Sportsmen&&Trainers`
+-- Table `mydb`.`sc`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Sportsmen&&Trainers` (
-  `NameT` VARCHAR(45) NULL,
-  `NameS` VARCHAR(45) NULL,
-  INDEX `NameT_idx` (`NameT` ASC) VISIBLE,
-  INDEX `NameS_idx` (`NameS` ASC) VISIBLE,
-  CONSTRAINT `NameT`
-    FOREIGN KEY (`NameT`)
-    REFERENCES `mydb`.`Trainers` (`Name`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `NameS`
-    FOREIGN KEY (`NameS`)
-    REFERENCES `mydb`.`Sportsman` (`Name`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Sports`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Sports` (
-  `SportName` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`SportName`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Sports&&Men`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Sports&&Men` (
-  `idSports` VARCHAR(45) NULL,
-  `idMen` VARCHAR(45) NULL,
-  INDEX `IdSports_idx` (`idSports` ASC) VISIBLE,
-  INDEX `IdMen_idx` (`idMen` ASC) VISIBLE,
-  CONSTRAINT `IdSports`
-    FOREIGN KEY (`idSports`)
-    REFERENCES `mydb`.`Sports` (`SportName`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `IdMen`
-    FOREIGN KEY (`idMen`)
-    REFERENCES `mydb`.`Sportsman` (`Name`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Competition`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Competition` (
-  `idCompetition` INT NOT NULL,
-  `Time` VARCHAR(45) NULL,
-  `Place` VARCHAR(45) NULL,
-  `Winner` VARCHAR(45) NULL,
-  PRIMARY KEY (`idCompetition`),
-  INDEX `Winner_idx` (`Winner` ASC) VISIBLE,
-  CONSTRAINT `Winner`
-    FOREIGN KEY (`Winner`)
-    REFERENCES `mydb`.`TempCompetition` (`idPlayers`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`TempCompetition`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`TempCompetition` (
-  `idComp` INT NULL,
-  `idPlayers` VARCHAR(45) NULL,
-  INDEX `idComp_idx` (`idComp` ASC) VISIBLE,
-  INDEX `idPlayer_idx` (`idPlayers` ASC) VISIBLE,
+CREATE TABLE IF NOT EXISTS `mydb`.`sc` (
+  `idC` INT NOT NULL,
+  `idS` INT NOT NULL,
+  PRIMARY KEY (`idC`, `idS`),
+  INDEX `idComp_idx` (`idC` ASC) VISIBLE,
+  INDEX `idPlayer_idx` (`idS` ASC) VISIBLE,
   CONSTRAINT `idComp`
-    FOREIGN KEY (`idComp`)
-    REFERENCES `mydb`.`Competition` (`idCompetition`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    FOREIGN KEY (`idC`)
+    REFERENCES `mydb`.`c` (`idC`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `idPlayer`
-    FOREIGN KEY (`idPlayers`)
-    REFERENCES `mydb`.`Sportsman` (`Name`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    FOREIGN KEY (`idS`)
+    REFERENCES `mydb`.`s` (`idS`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
+
+-- -----------------------------------------------------
+-- Table `mydb`.`sm`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`sm` (
+  `idS` INT NOT NULL,
+  `idSp` INT NOT NULL,
+  `Category` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`idS`, `idSp`),
+  INDEX `IdSports_idx` (`idSp` ASC) VISIBLE,
+  INDEX `IdMen_idx` (`idS` ASC) VISIBLE,
+  CONSTRAINT `IdMen`
+    FOREIGN KEY (`idS`)
+    REFERENCES `mydb`.`s` (`idS`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `IdSports`
+    FOREIGN KEY (`idSp`)
+    REFERENCES `mydb`.`sp` (`IdSp`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`t`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`t` (
+  `idT` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NULL DEFAULT NULL,
+  `idSp` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`idT`),
+  INDEX `Sport_idx` (`idSp` ASC) VISIBLE,
+  CONSTRAINT `FK_IdSports`
+    FOREIGN KEY (`idSp`)
+    REFERENCES `mydb`.`sp` (`IdSp`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`st`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`st` (
+  `idT` INT NOT NULL,
+  `idS` INT NOT NULL,
+  PRIMARY KEY (`idT`, `idS`),
+  INDEX `NameT_idx` (`idT` ASC) VISIBLE,
+  INDEX `NameS_idx` (`idS` ASC) VISIBLE,
+  CONSTRAINT `FK_Name`
+    FOREIGN KEY (`idT`)
+    REFERENCES `mydb`.`t` (`idT`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_Trainer`
+    FOREIGN KEY (`idS`)
+    REFERENCES `mydb`.`s` (`idS`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`winners`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`winners` (
+  `idWinners` INT NOT NULL AUTO_INCREMENT,
+  `idC` INT NULL DEFAULT NULL,
+  `First` INT NULL DEFAULT NULL,
+  `Second` INT NULL DEFAULT NULL,
+  `Third` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`idWinners`),
+  INDEX `Event_idx` (`idC` ASC) VISIBLE,
+  CONSTRAINT `Event`
+    FOREIGN KEY (`idC`)
+    REFERENCES `mydb`.`c` (`idC`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 16
+DEFAULT CHARACTER SET = utf8;
+
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Placeholder table for view `mydb`.`4.`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`4.` (`Name` INT, `Sport` INT);
+
+-- -----------------------------------------------------
+-- procedure 1. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `1. with join`(in t varchar(45), in tok varchar(45))
+BEGIN
+	select b.Name, des.Name, b.Token, des.unique_ as `Description` from b 
+    join des on b.idtype=des.idtype
+    where des.Name=t and token=tok
+    order by b.Name;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 1.buildings
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `1.buildings`(in t varchar(45), in tok varchar(45))
+BEGIN
+	declare t1 varchar(45);
+    set t1='';
+    case
+	when tok!=t1
+    then
+		Select * from b where idtype in (Select idType from des where Name=t) and Token=tok; 
+    else
+		Select * from b where idtype in (Select idType from des where Name=t);
+    end case; 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 10. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `10. with join`(in sport varchar(45))
+BEGIN
+	select idT, T.Name as Trainer, Sp.Name as Sport from T
+    join Sp on T.idSp = Sp.idSp
+    where sport=Sp.Name;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 10.Trainer
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `10.Trainer`(in sport varchar(45))
+BEGIN
+	select idT, Name from T where idSp in (select idSp from sp where Name=sport);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 11. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `11. with join`(in t1 date, in t2 date)
+BEGIN
+	select * from c 
+    join sc on c.idc=sc.idc
+    join s on s.ids=sc.ids
+    where s.ids not in (select c.idc from c where Time not between t1 and t2); 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 11.NotPart
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `11.NotPart`(in t1 date, in t2 date)
+BEGIN
+	select idS as id, Name as Name from S where idS not in 
+			(Select idS from SC where idC in (Select idC from c where time between  t1 and t2));
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 12. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `12. with join`(in t1 date, in t2 date)
+BEGIN
+	select o.ido, o.Name as Name, count(idC) as 'Number' from o
+    join c on o.ido=c.ido
+    where time between t1 and t2
+    group by o.ido, o.Name;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 12.CompetitionNumber
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `12.CompetitionNumber`(in t1 date, in t2 date)
+BEGIN
+	select idO, Name, (select count(*) from c where (time between t1 and t2) and c.ido=o.ido) as Number from o;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 13.Competition_In_Building
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `13.Competition_In_Building`(in t1 date, in t2 date)
+BEGIN
+	select *, (select Time from c where Time between t1 and t2 and c.idB=b.idB) as 'Data' from b where idB in (select idB from c where Time between t1 and t2);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 2. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `2. with join`(in spname varchar(45), in level_ int)
+BEGIN
+	select  s.idS as id, s.Name, Category, sp.Name as Sport from s
+    join sm on sm.ids=s.ids
+    join sp on sm.idsp=sp.idsp
+    where sp.Name=spname or sm.Category>level_
+    order by s.idS;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 2.sportsman
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `2.sportsman`(in spname varchar(45), in level_ int)
+BEGIN
+	select idS, Name from s 
+    where idS in 
+    (Select idS from sm 
+		where idSp in 
+			(Select idSp from sp where Name=spname)
+			or 
+            level_<Category);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 3. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `3. with join`(in level_ int)
+BEGIN
+	select s.idS as id, s.name as Sportsman, t.name as Trainer, sm.category as 'Level' from s
+    join st on s.ids=st.ids
+    join t on st.idt=t.idt
+    join sm on sm.ids=s.ids
+    where level_<=sm.category
+    order by s.idS;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 3.Trainer and level
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `3.Trainer and level`(in level_ int)
+BEGIN
+	select (Select Name from s where s.ids=st.ids) as 'Name', (Select Name from t where t.idt=st.idt) as 'trainer' from st 
+where
+	idS in 
+    (Select idS from sm where Category>=level_)
+    order by st.idS;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 4.MoreThanOneType
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `4.MoreThanOneType`()
+BEGIN
+	select s.Name as Name, sp.Name as Sport from s
+	inner join sm on s.idS=sm.idS
+	inner join sp on sm.idSp=sp.idSp
+	where s.idS in (Select sm.idS from sm group by sm.idS having count(sm.idSp)>1)
+Order by s.Name;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 5. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `5. with join`(in t varchar(45))
+BEGIN
+	select t.idt, t.Name, s.Name from t
+	join st on st.idt=t.idt
+    join s  on s.ids=st.ids
+    where s.Name=t;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 5.SportsmanTrainer
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `5.SportsmanTrainer`(in t varchar(45))
+BEGIN
+	select Name from T where idT in (Select idT from ST where idS in (Select idS from S where Name=t));
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 6. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `6. with join`(in t1 date, in t2 date, in Name_ varchar(45))
+BEGIN
+	select idC, Time, b.Name, o.Name  from c
+    join o on o.ido=c.ido
+    join b on b.idb=c.idb
+    where time between t1 and t2 or o.Name=Name_;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 6.Competition List
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `6.Competition List`(in t1 date, in t2 date, in Name_ varchar(45))
+BEGIN
+	select idC as Number, (Select Name from b where b.idB=c.idB) as Place, Time  from C 
+    where Time between t1 and t2
+    or 
+		idO in (select idO from o where o.Name=Name_);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 7.Winner
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `7.Winner`(in i int)
+BEGIN
+	select idc as 'Competition', (select Name from S where idS=First) as 'First Place',(select Name as 'Second Place' from S where idS=Second) as 'Second Place' ,(select Name as 'Third Place' from S where idS=Third) as 'Third Place'  from winners where idc=i; 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 8. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `8. with join`(in t1 varchar(45), in t2 varchar(45))
+BEGIN
+	select b.Name, Sp.Name, c.idc, Time from c
+    join Sp on c.idsp=Sp.idSp
+    join b  on b.idb=c.idb
+    where t2=sp.Name or t1=b.Name;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 8.ListOfBuildings
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `8.ListOfBuildings`(in t1 varchar(45), in t2 varchar(45))
+BEGIN
+	select * from C where idB in 
+		(Select idB from b where Name=t1 ) 
+	or 
+        idSp in (Select idSp from sp where Name=t2);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 9. with join
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `9. with join`(in t1 date, in t2 date)
+BEGIN
+	select cl.idCl as id, cl.Name as Name, count(S.idS) from s
+    join cl on s.idcl=cl.idcl
+    join sc on s.idS=sc.idS
+    join c on sc.idC=c.idC
+    where c.Time between t1 and t2
+    group by cl.idCL, cl.Name
+    ;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure 9.Clubs_and_sportsman
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `9.Clubs_and_sportsman`(in t1 date, in t2 date)
+BEGIN
+	select cl.Name, 
+    (select count(*) from S where 
+				cl.idcl=s.idcl 
+                and 
+                idS in (select idS from SC where idC in 
+					(select idC from C where Time between t1 and t2))
+	) 
+	as TotalParticipantes from cl; 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_S
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_S`(in Sportsman_Name varchar(45), in Club_Name varchar(45))
+BEGIN
+declare t int;
+set t=(Select count(Name) from cl where Name=Club_Name);
+case 
+	when t=0 Then select 'There is not such club' as msg;
+    else INSERT INTO `mydb`.`s` (`Name`, `IdCl`) VALUES(Sportsman_Name, (select idCl from cl where Name=Club_Name));
+end case;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_ST
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_ST`(in Trainer varchar(45), in Sportsman_Name varchar(45))
+BEGIN
+	declare t, d, n int;
+    declare Ssp, Tsp int;
+    DECLARE Exit HANDLER FOR 1062
+	SELECT 'Error, duplicate key - we already have such combination' as msg;
+    DECLARE Exit HANDLER FOR 1242
+	SELECT 'Uncertain Name' as msg;
+	set t=(Select count(*) from t where Name=Trainer);
+    set d=(Select count(*) from s where Name=Sportsman_Name);
+    case 
+	when t=0 Then select 'There is not trainer with such name' as msg;
+    when d=0 Then select 'There is not Sportsmane with such name'as msg;
+        else
+	set Tsp=(Select idsp from T where Name=Trainer), Ssp=(Tsp in (Select idsp from sm where ids in (select ids from s where name=Sportsman_Name) ));
+        case 
+        when Ssp=0
+        Then select ('Trainer and Sportsman belong to different types of sport ') union select ('Sportsman is ') union select Name from Sp where idSp in (Select idsp from sm where ids in (select ids from s where name=Sportsman_Name) ) union select concat(' Trainer is ',(select Name from Sp where idSp=Tsp) ) as msg;
+        else 
+        INSERT INTO `mydb`.`st` (`idS`, `idt`) VALUES((select idS from S where Name=Sportsman_Name), (select idT from T where Name=Trainer));
+        select * from st where idS=(select idS from S where Name=Sportsman_Name);
+        end case;
+end case;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_Winner
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_Winner`(in Competition_Number int, in First_Place_Sportsman_Name varchar(45), in Second_Place_Sportsman_Name varchar(45), in Third_Place_Sportsman_Name varchar(45))
+BEGIN
+	declare t1,t2,t3 int; 
+    declare i bool default 1; 
+	DECLARE Exit HANDLER FOR 1242
+	SELECT 'Coudnt identify Sportsmans correctly' as msg;
+    select idS into t1 from S where Name=First_Place_Sportsman_Name;
+    select idS into t2 from S where Name=Second_Place_Sportsman_Name;
+    select idS into t3 from S where Name=Third_Place_Sportsman_Name;
+	case 
+    when 
+		(t1 in (select idS from sc where idc=Competition_Number))
+    and
+		(t2 in (select idS from sc where idc=Competition_Number)) 
+	and 
+		(t3 in (select idS from sc where idc=Competition_Number))
+	and t1!=t2 and t1!=t3 and t2!=t3
+    then
+		case 
+		when i=exists(select * from winners where idc=Competition_Number)
+		then select 'There are already date about this competition' as msg;
+		else
+		insert into winners
+    (`idC`,
+`First`,
+`Second`,
+`Third`)
+VALUES
+(
+Competition_Number,
+t1,
+t2,
+t3);
+end case;
+    else 
+select 'Wrong names - they are not exist or havent taken part in this competition' as msg;
+    end case; 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_c
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_c`(in Organiser varchar(45), in Dat date, in Building_Address varchar(45), in Kind_of_Sport varchar(45))
+BEGIN
+	declare t, och, spch, bch int default 0;
+    declare t1, t2 int;
+    set t = Dat between '1900-01-01' and '2050-01-01';
+    set och= (select count(*) from o where Name=Organiser);
+    set spch=(select count(*) from sp where Name=Kind_of_Sport);
+    set bch =(select count(*) from b where Name=Building_Address);
+    case
+	   when t=0
+			then select 'Wrong date' as msg; 
+       when (och=0 or spch=0 or bch=0) and t=1
+			then select 'One of mentioned arguments do not exist' union select concat(och,'', spch, '', bch) as msg;
+       when (och>1 or spch>1 or bch>1) and t=1
+			then select 'Uncertain value - there are several names like this' as msg;
+       else 
+			begin
+				set t1=(select idtype from b where name=Building_Address), t2=(select idsp from sp where Name=Kind_of_Sport), t=(exists(select * from PspPl where idsp=t2 and idtype=t1));
+				case
+				when t=0
+					then select 'Competition couldnot take place in this place' as msg;
+				else
+						begin
+								set bch=exists(select * from c where time=dat and idb in (select idb from b where name=Building_Address));
+									case 
+									when bch=0
+										then 
+                                        begin
+										INSERT INTO `mydb`.`c`
+										(
+										`idO`,
+										`Time`,
+										`idB`,
+										`idSp`)
+										VALUES
+										((select ido from o where Name=Organiser),
+										Dat,
+										(select idB from B where Name=Building_Address),
+										t2);
+                                        select 'done' as msg;
+                                        end;
+											else
+											select 'This time in this place is already busy' as msg; 
+									end case;
+							end;
+				end case; 
+			end; 
+	end case; 
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_sc
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_sc`(in Sportsman_Name varchar(45), in Competition_Number int)
+BEGIN
+	declare t date;
+    declare spt bool;
+	DECLARE Exit HANDLER FOR 1242
+	SELECT 'Uncertain Name' as msg;
+    DECLARE Exit HANDLER FOR 1062
+	SELECT 'Error, duplicate key - we already have such date' as msg;
+   set t=(select Time from c where idc=Competition_Number);
+   set spt=((select idsp from c where idc=Competition_Number) in (select idsp from sm where ids=(select idS from s where Name=Sportsman_Name)));
+   case
+		when t in (select Time from c where Competition_Number!=idc and idc in (select idc from sc where ids in (select idS from S where Name=Sportsman_Name)))
+		then select 'Sportsman busy in this time' as msg;
+		else 
+			case
+			when spt=0
+			then select 'Sportsman doesnt have ability to take part' as msg;
+			else
+			INSERT INTO `mydb`.`sc`
+			(`idC`,
+			`idS`)
+			VALUES
+			(Competition_Number,
+			(select idS from S where Name=Sportsman_Name));
+			end case;
+end case;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure insert_sp
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_sp`(in Sportsman_Name varchar(45), in Sport varchar(45), in Level_ int)
+BEGIN
+declare n int;
+DECLARE Exit HANDLER FOR 1048
+	SELECT 'Wrong date' as msg;
+DECLARE Exit HANDLER FOR 1062
+	SELECT 'Error, duplicate key - we already have such date' as msg;
+set n=(Level_ between 0 and 11); 
+case 
+when n=1 then 
+INSERT INTO `mydb`.`sm`
+(`idS`,
+`idSp`,
+`Category`)
+VALUES
+((select max(idS) from S where Name=Sportsman_Name ),
+(select max(idSp) from sp where Name=Sport),
+Level_);
+else 
+select 'Wrong value of level Parameter'as msg;
+end case;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- View `mydb`.`4.`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`4.`;
+USE `mydb`;
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `mydb`.`4.` AS select `mydb`.`s`.`Name` AS `Name`,`mydb`.`sp`.`Name` AS `Sport` from ((`mydb`.`s` join `mydb`.`sm` on((`mydb`.`s`.`idS` = `mydb`.`sm`.`idS`))) join `mydb`.`sp` on((`mydb`.`sm`.`idSp` = `mydb`.`sp`.`IdSp`))) where `mydb`.`s`.`idS` in (select `mydb`.`sm`.`idS` from `mydb`.`sm` group by `mydb`.`sm`.`idS` having (count(`mydb`.`sm`.`idSp`) > 1)) order by `mydb`.`s`.`Name`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
